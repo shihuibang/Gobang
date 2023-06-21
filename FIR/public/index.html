@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="./lib/vue.js"></script>
+    <script defer src="./index.js"></script>
+    <!-- <script defer src="./get.js"></script> -->
+</head>
+
+<body>
+
+    <div id="mask">
+
+    </div>
+    <div id="app">
+        <!-- 历史对局模态框 -->
+        <div class="modal" v-if="showModal">
+            <div class="modal-content">
+                <span class="close" @click="closeModal">&times;</span>
+                <h2>历史对局记录</h2>
+                <table class="game-records-table">
+                    <!-- 表格内容 -->
+
+                    <thead>
+                        <tr>
+                            <th>对局时间</th>
+                            <th>黑方</th>
+                            <th>白方</th>
+                            <th>胜者</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <!-- 循环显示所有对局记录 -->
+                        <tr v-for="record in gameRecords" :key="record.gameId">
+                            <td>{{record.start_time}}</td>
+                            <td>{{record.black_player_id}}</td>
+                            <td>{{record.white_player_id}}</td>
+                            <td v-bind:class="{ 'wintd': record.winner == this.userId }">{{record.winner}}</td>
+                            <td>
+                                <button @click="showChessModal(record)">复盘</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <div class="chessModal" v-if="chessModal">
+            <div class="chessModal-modal-content">
+                <div class="chessModal-desk">
+                    <span class="chessModal-close" @click="closeChessModal">&times;</span>
+                    <div id="board">
+                        <div id="board-container">
+
+                            <ul id="row-numbers">
+                                <li v-for="i in 15" :key="i" :class="{num:true}" :style="{ order: 16 - i}">{{ i }}</li>
+                            </ul>
+                            <div id="checkerboard">
+                                <table>
+                                    <!-- 棋盘的网格 -->
+                                    <tr v-for="i in 14">
+                                        <td v-for="j in 14">
+                                            <!-- 天元那五个点 -->
+                                            <div v-if="i === 7 && j === 8" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 3 && j === 4" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 3 && j === 12" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 11 && j === 4" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 11 && j === 12" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- 棋盘上的棋子 -->
+                                <template v-for="(pieceOfOnePlayer, index) in gameStatu">
+                                    <div v-for="(p, pIndex) in pieceOfOnePlayer" class="piece"
+                                        :class="{white: index === 1}"
+                                        :style="{top: `${p[0] * 40 - 12}px`, left: `${p[1] * 40 + 4}px`}">
+                                    </div>
+                                </template>
+
+                            </div>
+
+                        </div>
+                        <div id="letter-container">
+                            <ul id="column-letters">
+                                <li>A</li>
+                                <li>B</li>
+                                <li>C</li>
+                                <li>D</li>
+                                <li>E</li>
+                                <li>F</li>
+                                <li>G</li>
+                                <li>H</li>
+                                <li>I</li>
+                                <li>J</li>
+                                <li>K</li>
+                                <li>L</li>
+                                <li>M</li>
+                                <li>N</li>
+                                <li>O</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div style="display: block;">
+            <div style="display: flex;justify-content: center;">施辉榜 2043205000074</div>
+
+            <div style="display: flex;">
+                <div class="desk">
+                    <div style="display: block;">
+                        <div>
+                            <button class="btn" @click="hand()">举手匹配</button>
+                        </div>
+                        <div><button class="btn" @click="showGameRecords()">历史对局</button></div>
+                        <div><button class="btn" @click="backMove">悔棋</button></div>
+                    </div>
+
+
+                    <div id="board">
+                        <div id="board-container">
+                            <!-- <div id="numbers"> -->
+
+                            <ul id="row-numbers">
+                                <li v-for="i in 15" :key="i" :class="{num:true}" :style="{ order: 16 - i}">{{ i }}</li>
+                            </ul>
+                            <!-- </div> -->
+                            <div id="checkerboard">
+                                <table>
+                                    <!-- 棋盘的网格 -->
+                                    <tr v-for="i in 14">
+                                        <td v-for="j in 14" @mouseMove="onMouseMove(i - 1, j - 1, $event)"
+                                            @click="onCellClicked(i - 1, j - 1, $event)">
+                                            <!-- 天元那五个点 -->
+                                            <div v-if="i === 7 && j === 8" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 3 && j === 4" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 3 && j === 12" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 11 && j === 4" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                            <div v-if="i === 11 && j === 12" class="dot"
+                                                :style="{top: `${i * 40 + 1}px`, left: `${j * 40 - 24}px`}"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- 棋盘上的棋子 -->
+                                
+                                <template v-for="(pieceOfOnePlayer, turn) in pieces">
+                                    <div v-for="p in pieceOfOnePlayer" class="piece"
+                                        :class="{white: !!turn, blink: (win && win.find(w => w[0] === p[0] && w[1] === p[1]))  || (p[0] === pose[0] && p[1] === pose[1])}"
+                                        :style="{top: `${p[0] * 40 - 12}px`, left: `${p[1] * 40 + 4}px`}"></div>
+                                </template>
+                                <!-- :class="{white: !!turn, blink: win && win.find(w => w[0] === p[0] && w[1] === p[1])}" -->
+                                <!-- || (p[0] === pose[0] && p[1] === pose[1]) -->
+                            </div>
+
+                        </div>
+                        <div id="letter-container">
+                            <ul id="column-letters">
+                                <li>A</li>
+                                <li>B</li>
+                                <li>C</li>
+                                <li>D</li>
+                                <li>E</li>
+                                <li>F</li>
+                                <li>G</li>
+                                <li>H</li>
+                                <li>I</li>
+                                <li>J</li>
+                                <li>K</li>
+                                <li>L</li>
+                                <li>M</li>
+                                <li>N</li>
+                                <li>O</li>
+                            </ul>
+                        </div>
+
+
+                    </div>
+
+                    <!-- 某方获胜时显示桌面底部显示的消息 -->
+                    <h2 v-show="win" class="message" @click="restart()">
+                        <div class="piece" :class="{white: winner}"></div>
+                        &nbsp;Win
+                    </h2>
+                </div>
+                <!-- 显示当前该谁落子和倒计时的区域 -->
+                <div id="controller">
+                    <div class="piece" :class="{white: curPlayer}"></div>
+                    <div>{{ timer }}</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+</html>

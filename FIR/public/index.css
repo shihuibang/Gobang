@@ -1,0 +1,315 @@
+:root {
+    --cellSize: 40px;           /* 棋盘格子尺寸 */
+    --pieceSize: 24px;          /* 棋子尺寸 */
+}
+body{
+    background-image:url("./resource/woodfloor.jpg");
+}
+/* div#mask{
+	padding: 0;margin:0;
+	position: fixed;
+	top: 0px;left: 0px; 
+	height: 100%;width: 100%;
+	background-color: rgba(0,0,0,0.7);
+} */
+#app {
+    display: flex;
+    justify-content: center;
+}
+
+.desk {
+    /* background-color: #DCB35C; */
+    background-image: url("./resource/wood.jpg");
+    padding: 40px 35px 40px 20px;
+    padding-bottom: 10px;
+    display: flex;
+    /* align-items: center; */
+    position: relative;
+    border-radius: 10px;
+}
+.chessModal-desk {
+  /* background-color: #DCB35C; */
+  background-image: url("./resource/woodfloor.jpg");
+  padding: 40px 35px 40px 20px;
+  padding-bottom: 10px;
+  display: flex;
+  /* align-items: center; */
+  position: relative;
+  border-radius: 10px;
+}
+
+
+.btn{
+	width: 120px;height: 40px;
+	border-radius: 10px;
+	border:1px solid white; 
+	line-height: 40px;
+	text-align: center;
+	font-size: 16px;
+	font-weight: 700;
+    color: #fff;
+	cursor: pointer;
+    background-image: url("./resource/wood.jpg");
+	/* background-color: rgb(194,116,38); */
+    margin: 0px 20px 20px 0px;
+	/* position: absolute; */
+}
+
+.btn:hover{
+	box-shadow: 0 0 10px white;
+}
+
+
+
+#board {
+    position: relative;
+    /* display: inline; */
+}
+
+#board table {
+    border-spacing: 0;
+    border: 1px solid #000;
+}
+
+#board td {
+    width: var(--cellSize);
+    height: var(--cellSize);
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
+#board-container {
+    display: flex;
+    /* flex-direction: column; */
+  }
+  .modal {
+    /* display: block !important; */
+    /* display: flex; */
+    position: fixed !important;
+    z-index: 1 !important;
+    /* justify-content: center; */
+    /* opacity: 1 !important; */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .chessModal {
+    /* display: block !important; */
+    /* display: flex; */
+    position: fixed ;
+    z-index: 10;
+    /* justify-content: center; */
+    /* opacity: 1 !important; */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 45%;
+    height: 85%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  
+  .modal-content {
+    background-color:#f2f2f8;
+    margin: 15% auto;
+    padding: 0px;
+    border: 1px solid #888;
+    width: 100%;
+  }
+  .chessModal-modal-content{
+    background-color:#f2f2f8;
+    /* margin: 15% auto; */
+    padding: 0px;
+    border: 1px solid #888;
+    width: 100%;
+  }
+  table.game-records-table {
+    border-collapse: collapse;
+  }
+  
+  table.game-records-table td,
+  table.game-records-table th {
+    border: 1px solid black;
+    padding: 5px;
+    width: 150px;
+    text-align: center;
+  }
+  .wintd{
+    background-color: red;
+    color: white;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .chessModal-close{
+    color: #060606;
+    float: right;
+    left: 100%;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  #number{
+    height: 40px;
+  }
+
+
+
+  #row-numbers {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #row-numbers li {
+    /* height: 40px; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* padding-left: 5px; */
+    font-size: 8px;
+    font-weight: bold;
+    /* margin: 22px 0px 0px 0px; */
+    color: #333;
+  }
+
+  #letter-container{
+    display: flex;
+    width: 540px;
+    margin-left: 10px;
+    /* margin-top: 0px; */
+    
+  }
+
+  #column-letters {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0px;
+    padding: 0;
+    list-style: none;
+    font-size: 8px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  #column-letters li {
+    width: 40px;
+    /* height: var(--cellSize); */
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+  }
+
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #1E1E1E;
+    position: absolute;
+    /* top: 50%;
+    left: 50%; */
+    transform: translate(-50%, -50%);
+  }
+
+.piece {
+    width: var(--pieceSize);
+    height: var(--pieceSize);
+    border-radius: 50%;
+    background-image: radial-gradient(#444, #000);
+}
+
+#board .piece {
+    position: absolute;
+}
+
+.piece.white {
+    background-image: radial-gradient(#fff, #ddd);
+}
+
+.piece.blink {
+    animation: blink 0.5s infinite alternate-reverse;
+}
+
+.order {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6px;
+  font-weight: bold;
+  color: rgb(248, 4, 4);
+}
+
+
+#controller {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+#controller .piece {
+    position: relative;
+    margin: 0 10px;
+    animation: blink 0.5s infinite alternate-reverse;
+}
+
+/* 棋子闪烁动画 */
+@keyframes blink {
+    from { transform: scale(0.8); opacity: 0.7;}
+    to { transform: scale(1.2); opacity: 1;}
+}
+
+.message {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+    background-color: red;
+    color: white;
+    padding: 10px 0;
+    margin: 0;
+    border-radius: 0 0 10px 10px;
+    cursor: pointer;
+}
+
+
+#backMove-popup {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 9999;
+}
+
+#popup p {
+  margin: 0 0 10px;
+}
+
+#popup button {
+  margin-right: 10px;
+}
