@@ -6,4 +6,5 @@
 #启动服务器后，浏览器输入http://localhost:9000/public/index.html 即可访问，gobang.sql为数据库文件
 
 node.js版本:v18.16.0
+
 Mysql版本:8.0.21
